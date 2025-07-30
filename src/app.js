@@ -12,6 +12,6 @@ app.use(bodyparser.urlencoded({extended:true}));
 app.use(express.json());
 app.use('/', router);
 const categoryRoutes = require('./routes/categoryRoute');
-app.use('/', categoryRoutes);
+app.use('/api', categoryRoutes);
 
 module.exports=app;
