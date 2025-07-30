@@ -2,9 +2,6 @@ let express = require('express');
 let bodyparser = require('body-parser');
 let db = require("../db.js");
 let router=require('../src/routes/route.js')
-const categoryRoutes = require("./routes/categoryRoutes");
-
-
 require("dotenv").config();
 
 
@@ -14,11 +11,7 @@ app.use(express.static("public"));
 app.use(bodyparser.urlencoded({extended:true}));
 app.use(express.json());
 app.use('/', router);
-<<<<<<< Updated upstream
 const categoryRoutes = require('./routes/categoryRoute');
 app.use('/api', categoryRoutes);
-=======
-app.use("/api", categoryRoutes);
->>>>>>> Stashed changes
 
 module.exports=app;
