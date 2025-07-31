@@ -12,5 +12,7 @@ app.use(express.json());
 app.use('/', router);
 const categoryRoutes = require("./routes/categoryRoute.js");
 app.use("/api", categoryRoutes);
+const productRoutes=require("./routes/productRoute.js")
+app.use("/api",productRoutes)
 
 module.exports=app;
