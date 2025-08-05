@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const categoryController = require('../controllers/categoryController');
 const { authenticateToken, isAdmin } = require('../middleware/authMiddleware.js');
+
 router.post('/categories/add',authenticateToken,isAdmin, categoryController.createCategory);
 
 // READ
