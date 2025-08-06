@@ -19,4 +19,8 @@ app.use("/api",productRoutes);
 const supplierRoutes = require("./routes/supplierRoute.js");
 app.use("/api",supplierRoutes);
 
+const customerRoutes = require('./routes/customerRoute.js');
+app.use("/api", customerRoutes);
+
+
 module.exports=app;
