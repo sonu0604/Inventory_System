@@ -1,14 +1,16 @@
 const express = require("express");
 const router = express.Router();
-const customerController = require("../controllers/customersController");
-const { authenticateToken, isAdmin } = require("../middleware/authMiddleware");
+const supplierController = require("../controllers/supplierController");
+const {authenticateToken , isAdmin } = require("../middleware/authMiddleware");
 
-router.post("/customer/add", authenticateToken, isAdmin, customerController.createCustomer);
-router.get("/customer/view", authenticateToken, isAdmin, customerController.getAllCustomers);
-router.get("/customer/:id", authenticateToken, isAdmin, customerController.getCustomerById);
-router.put("/customer/update/:id", authenticateToken, isAdmin, customerController.updateCustomer);
-router.delete("/customer/delete/:id", authenticateToken, isAdmin, customerController.deleteCustomer);
-// router.get("/customer/search", authenticateToken, isAdmin, customerController.searchCustomerByName);
-router.get("/customer/search/:name", authenticateToken, isAdmin, customerController.searchCustomerByName);
+router.post("/supplier/add", authenticateToken, isAdmin, supplierController.createSupplier);
+router.get("/supplier/view", authenticateToken, isAdmin, supplierController.getAllSuppliers);
+router.get("/supplier/:id", authenticateToken, isAdmin, supplierController.getSupplierById);
+router.put("/supplier/update/:id", authenticateToken, isAdmin, supplierController.updateSupplier);
+router.delete("/supplier/delete/:id", authenticateToken, isAdmin, supplierController.deleteSupplier);
+// router.get("/supplier/search", authenticateToken, isAdmin, supplierController.searchSupplierByName);
+router.get("/supplier/search/:name", authenticateToken, isAdmin, supplierController.searchSupplierByName);
+
 
 module.exports = router;
+
