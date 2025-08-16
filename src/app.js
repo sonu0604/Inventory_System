@@ -6,7 +6,15 @@ let router=require('../src/routes/route.js')
 require("dotenv").config();
 
 let app = express();
+const cors = require("cors");
 
+app.use(cors({
+  origin: "http://localhost:5173", 
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+}));
+const path = require("path");
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use(bodyparser.urlencoded({extended:true}));
 app.use(express.json());
 app.use('/', router);

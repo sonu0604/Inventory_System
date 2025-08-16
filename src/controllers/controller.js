@@ -4,23 +4,29 @@ const validator = require('validator');
 const userModel = require('../models/model');
 
 const register = async (req, res) => {
-  const { username, password, role, email, contact, name, picture } = req.body;
+  const { username, password, role, email, contact, name } = req.body;
+  const picture = req.file ? `/uploads/${req.file.filename}` : null;
 
   // Validate email
   if (!validator.isEmail(email)) {
-    return res.status(400).json({ message: 'Invalid email format' });
+    return res.status(400).json({ message: "Invalid email format" });
   }
 
   // Validate password
   const passwordRegex = /^(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{6,})/;
   if (!passwordRegex.test(password)) {
-    return res.status(400).json({ message: 'Password must be at least 6 characters, include a digit and a special character' });
+    return res
+      .status(400)
+      .json({
+        message:
+          "Password must be at least 6 characters, include a digit and a special character"
+      });
   }
 
   // Check if user exists
   userModel.findUserByEmail(email, async (err, result) => {
     if (result && result.length > 0) {
-      return res.status(409).json({ message: 'User already exists with this email' });
+      return res.status(409).json({ message: "User already exists with this email" });
     }
 
     // Hash password
@@ -37,11 +43,27 @@ const register = async (req, res) => {
     };
 
     userModel.createUser(newUser, (err, result) => {
-      if (err) return res.status(500).json({ message: 'Registration failed', error: err });
-      return res.status(201).json({ message: 'User registered successfully' });
+      if (err)
+        return res
+          .status(500)
+          .json({ message: "Registration failed", error: err });
+
+      return res.status(201).json({
+        message: "User registered successfully",
+        user: {
+          id: result.insertId,
+          username,
+          email,
+          role,
+          contact,
+          name,
+          picture
+        }
+      });
     });
   });
 };
+
 
 const login = (req, res) => {
   const { email, password } = req.body;
