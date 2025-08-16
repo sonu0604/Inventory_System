@@ -1,0 +1,38 @@
+.about-section {
+  position: relative;
+  background-image: url("https://static.vecteezy.com/system/resources/thumbnails/035/941/144/small_2x/ai-generated-inventory-goods-warehouse-background-photo.jpg");
+  background-size: cover;      /* Makes image cover the entire section */
+  background-position: center; /* Centers the image */
+  background-repeat: no-repeat;/* Prevents tiling */
+  min-height: 100vh;
+}
+
+.about-section .overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.55); /* Dark overlay */
+}
+
+.about-section h2,
+.about-section p,
+.about-section ul {
+  position: relative;
+  z-index: 2;
+}
+
+.about-section img {
+  border: 5px solid white;
+}
+
+.carousel-item {
+  min-height: 200px;
+}
+
+.carousel-item p,
+.carousel-item ul {
+  font-size: 1rem;
+  line-height: 1.6;
+}

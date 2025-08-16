@@ -1,0 +1,29 @@
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main {
+  flex: 1; /* Pushes footer to the bottom */
+}
+.navbar .nav-link.active {
+  color: #ffc107 !important; /* Yellow highlight */
+  font-weight: bold;
+  transform: scale(1.1);
+  transition: transform 0.2s ease-in-out, color 0.2s ease-in-out;
+}
+
+.navbar .nav-link {
+  transition: transform 0.2s ease-in-out, color 0.2s ease-in-out;
+}
+
+.navbar .nav-link:hover {
+  transform: scale(1.05);
+}
+
