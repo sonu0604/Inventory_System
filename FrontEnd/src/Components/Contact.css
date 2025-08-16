@@ -1,0 +1,24 @@
+.contact-section {
+  position: relative;
+  background-image: url("https://images.unsplash.com/photo-1534536281715-e28d76689b4d?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8Y29udGFjdCUyMHVzfGVufDB8fDB8fHww");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+}
+
+.contact-section .overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.55); /* Dark overlay */
+}
+
+.contact-section h2,
+.contact-section p,
+.contact-section form {
+  position: relative;
+  z-index: 2;
+}
