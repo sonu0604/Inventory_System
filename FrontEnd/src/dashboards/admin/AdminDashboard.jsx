@@ -3,6 +3,9 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import "./AdminDashboard.css";
 import axios from "axios";
 import { Modal, Button } from "react-bootstrap";
+import { Bar, Line } from "react-chartjs-2";
+import { Card, Spinner } from "react-bootstrap";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 import {
   FaBars,
@@ -26,6 +29,33 @@ import {
   FaExclamationTriangle,
   FaCheckCircle
 } from "react-icons/fa";
+
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  LineElement,
+  PointElement,
+} from "chart.js";
+
+
+// ✅ Register chart.js components
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  LineElement,
+  PointElement,
+  Title,
+  Tooltip,
+  Legend
+);
+
+
 
 function AdminDashboard() {
   const [isOpen, setIsOpen] = useState(true);
@@ -220,13 +250,35 @@ function AdminDashboard() {
               </li>
             </ul>
           )}
-
-
-
-
-          <li onClick={() => setActivePage("reports")}>
+          {/* Reports Menu */}
+          <li
+            onClick={() => setShowReportsSubmenu(!showReportsSubmenu)}
+            className="menu-with-submenu"
+          >
             <FaChartBar /> <span>{isOpen && " Reports"}</span>
           </li>
+          {isOpen && showReportsSubmenu && (
+            <ul className="submenu list-unstyled">
+              <li
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setActivePage("salesReport");
+                }}
+              >
+                <FaListUl /> <span>Sales Report</span>
+              </li>
+              {/* ✅ Purchases Report */}
+              <li
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setActivePage("purchasesReport");
+                }}
+              >
+                <FaShoppingCart /> <span>Purchases Report</span>
+              </li>
+              {/* Later we can add more reports like Purchases, Stock, etc. */}
+            </ul>
+          )}
 
           <li onClick={() => setActivePage("settings")}>
             <FaCog /> <span>{isOpen && " Settings"}</span>
@@ -268,8 +320,10 @@ function AdminDashboard() {
           {activePage === "viewCustomers" && <ViewCustomers />}
           {activePage === "makePurchase" && <MakePurchaseForm />}
           {activePage === "viewPurchases" && <ViewPurchases />}
-           {activePage === "makeSale" && <MakeSale />}
-           {activePage === "viewSales" && <ViewSales />}
+          {activePage === "makeSale" && <MakeSale />}
+          {activePage === "viewSales" && <ViewSales />}
+          {activePage === "salesReport" && <SalesReport />}
+          {activePage === "purchasesReport" && <PurchasesReport />}
         </div>
       </div>
     </div>
@@ -2391,7 +2445,7 @@ function ViewPurchases() {
   );
 }
 
- function MakeSale() {
+function MakeSale() {
   const [products, setProducts] = useState([]);
   const [consumers, setConsumers] = useState([]);
 
@@ -2415,10 +2469,10 @@ function ViewPurchases() {
 
   useEffect(() => {
     // Prefill user_id if you store it
-    
-   const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
-   const uid = storedUser.user_id || "";
-   // console.log(uid)
+
+    const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
+    const uid = storedUser.user_id || "";
+    // console.log(uid)
     setForm((f) => ({ ...f, user_id: uid }));
 
     // Load products (with availability) & consumers
@@ -2733,43 +2787,43 @@ function ViewSales() {
   };
 
   const onClickDownloadAll = async () => {
-  try {
-    const res = await axios.get("http://localhost:3000/api/sales/download/pdf", {
-      headers: tokenHeader,
-      responseType: "blob",
-    });
+    try {
+      const res = await axios.get("http://localhost:3000/api/sales/download/pdf", {
+        headers: tokenHeader,
+        responseType: "blob",
+      });
 
-    const url = window.URL.createObjectURL(new Blob([res.data], { type: "application/pdf" }));
-    const link = document.createElement("a");
-    link.href = url;
-    link.setAttribute("download", "sales_report.pdf");
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-  } catch (err) {
-    console.error("Failed to download all sales:", err);
-    setMsg("❌ Failed to download all sales report");
-  }
-};
+      const url = window.URL.createObjectURL(new Blob([res.data], { type: "application/pdf" }));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "sales_report.pdf");
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (err) {
+      console.error("Failed to download all sales:", err);
+      setMsg("❌ Failed to download all sales report");
+    }
+  };
 
   const onClickDownloadRow = async (sale_id) => {
-  try {
-    const res = await axios.get(`http://localhost:3000/api/sales/invoice/${sale_id}`, {
-      headers: tokenHeader,
-      responseType: "blob" // important for PDF
-    });
-    const url = window.URL.createObjectURL(new Blob([res.data], { type: "application/pdf" }));
-    const link = document.createElement("a");
-    link.href = url;
-    link.setAttribute("download", `invoice_${sale_id}.pdf`);
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-  } catch (err) {
-    console.error("Download failed:", err);
-    setMsg("❌ Failed to download invoice");
-  }
-};
+    try {
+      const res = await axios.get(`http://localhost:3000/api/sales/invoice/${sale_id}`, {
+        headers: tokenHeader,
+        responseType: "blob" // important for PDF
+      });
+      const url = window.URL.createObjectURL(new Blob([res.data], { type: "application/pdf" }));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `invoice_${sale_id}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (err) {
+      console.error("Download failed:", err);
+      setMsg("❌ Failed to download invoice");
+    }
+  };
 
   const onEdit = (row) => {
     setEditing(row);
@@ -2941,11 +2995,11 @@ function ViewSales() {
             <div className="vp-modal-body">
               <div className="vp-field">
                 <label>Quantity</label>
-                <input type="number" min="1" value={editForm.quantity} onChange={(e) => setEditForm({...editForm, quantity: e.target.value})} className="vp-input"/>
+                <input type="number" min="1" value={editForm.quantity} onChange={(e) => setEditForm({ ...editForm, quantity: e.target.value })} className="vp-input" />
               </div>
               <div className="vp-field">
                 <label>Unit Price</label>
-                <input type="number" step="0.01" min="0" value={editForm.unit_price} onChange={(e) => setEditForm({...editForm, unit_price: e.target.value})} className="vp-input"/>
+                <input type="number" step="0.01" min="0" value={editForm.unit_price} onChange={(e) => setEditForm({ ...editForm, unit_price: e.target.value })} className="vp-input" />
               </div>
               <div className="vp-summary">
                 <div><small>Product</small><div>{editing.product_name}</div></div>
@@ -2964,5 +3018,279 @@ function ViewSales() {
   );
 }
 
+
+
+function SalesReport() {
+  const [salesData, setSalesData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [salesSummary, setSalesSummary] = useState({});
+
+  useEffect(() => {
+    fetchSalesReport();
+  }, []);
+
+  const fetchSalesReport = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get("http://localhost:3000/api/reports/sales", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      setSalesSummary(response.data.summary || {});
+      setSalesData(response.data.sales || []);
+      setLoading(false); // ✅ Fix: stop loading after data is fetched
+    } catch (error) {
+      console.error("Error fetching sales report:", error);
+      setLoading(false);
+    }
+  };
+
+  const labels = salesData.map((s) =>
+    new Date(s.sale_date).toLocaleDateString()
+  );
+  const quantities = salesData.map((s) => s.quantity);
+  const revenues = salesData.map((s) => Number(s.quantity) * Number(s.unit_price));
+
+  const barData = {
+    labels,
+    datasets: [
+      {
+        label: "Total Sales (₹)",
+        data: revenues,
+        backgroundColor: "rgba(0, 255, 255, 0.6)",
+        borderRadius: 8,
+      },
+    ],
+  };
+
+  const lineData = {
+    labels,
+    datasets: [
+      {
+        label: "Quantity Sold",
+        data: quantities,
+        fill: false,
+        borderColor: "#ff9800",
+        tension: 0.3,
+      },
+    ],
+  };
+
+  return (
+    <div className="sales-report-container">
+      <h2 className="sales-report-title">📊 Sales Report</h2>
+
+      {loading ? (
+        <div className="loading-container">
+          <Spinner animation="border" variant="light" />
+        </div>
+      ) : (
+        <div className="row g-4">
+          {/* Bar Chart */}
+          <div className="col-md-6">
+            <Card className="sales-report-card">
+              <Card.Body>
+                <Card.Title className="chart-title">Daily Sales (₹)</Card.Title>
+                <Bar data={barData} options={{ responsive: true, plugins: { legend: { labels: { color: "#fff" } } } }} />
+              </Card.Body>
+            </Card>
+          </div>
+
+          {/* Line Chart */}
+          <div className="col-md-6">
+            <Card className="sales-report-card">
+              <Card.Body>
+                <Card.Title className="chart-title">Quantity Sold</Card.Title>
+                <Line data={lineData} options={{ responsive: true, plugins: { legend: { labels: { color: "#fff" } } }, scales: { x: { ticks: { color: "#bbb" } }, y: { ticks: { color: "#bbb" } } } }} />
+              </Card.Body>
+            </Card>
+          </div>
+
+          {/* Summary Cards */}
+          <div className="summary-container">
+            <div className="summary-card">
+              <h4>Total Sales</h4>
+              <p>{salesSummary.total_sales}</p>
+            </div>
+            <div className="summary-card">
+              <h4>Total Quantity</h4>
+              <p>{salesSummary.total_quantity}</p>
+            </div>
+            <div className="summary-card">
+              <h4>Total Revenue</h4>
+              <p>₹{salesSummary.total_revenue}</p>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+const PurchasesReport = () => {
+  const [purchasesData, setPurchasesData] = useState([]);
+  const [summary, setSummary] = useState({});
+  const [loading, setLoading] = useState(true);
+
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
+
+  useEffect(() => {
+    fetchPurchasesReport();
+  }, []);
+
+  const fetchPurchasesReport = async () => {
+    try {
+      setLoading(true);
+      const res = await axios.get("http://localhost:3000/api/reports/purchases", {
+        params: { fromDate, toDate },
+      });
+      setPurchasesData(res.data.purchases || []);
+      setSummary(res.data.summary || {});
+    } catch (err) {
+      console.error("Error fetching purchases report:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Prepare chart data
+  const labels = purchasesData.map((p) =>
+    new Date(p.purchase_date).toLocaleDateString()
+  );
+  const quantities = purchasesData.map((p) => p.quantity);
+  const totalSpent = purchasesData.map(
+    (p) => Number(p.quantity) * Number(p.unit_price)
+  );
+
+  const barData = {
+    labels,
+    datasets: [
+      {
+        label: "Total Spent (₹)",
+        data: totalSpent,
+        backgroundColor: "rgba(0, 216, 255, 0.6)",
+        borderRadius: 8,
+      },
+    ],
+  };
+
+  const lineData = {
+    labels,
+    datasets: [
+      {
+        label: "Quantity Purchased",
+        data: quantities,
+        fill: false,
+        borderColor: "#ff6384",
+        tension: 0.3,
+      },
+    ],
+  };
+
+  return (
+    <div className="report-container">
+      <h2 className="report-title">📦 Purchases Report</h2>
+
+      {/* Filters */}
+      <div className="filters">
+        <input
+          type="date"
+          value={fromDate}
+          onChange={(e) => setFromDate(e.target.value)}
+          className="date-input"
+        />
+        <input
+          type="date"
+          value={toDate}
+          onChange={(e) => setToDate(e.target.value)}
+          className="date-input"
+        />
+        <button onClick={fetchPurchasesReport} className="filter-btn">
+          Apply Filter
+        </button>
+      </div>
+
+      {/* Summary Cards */}
+      <div className="summary-cards">
+        <div className="card">
+          <h4>Total Purchases</h4>
+          <p>{summary?.total_purchases || 0}</p>
+        </div>
+        <div className="card">
+          <h4>Total Quantity</h4>
+          <p>{summary?.total_quantity || 0}</p>
+        </div>
+        <div className="card">
+          <h4>Total Spent</h4>
+          <p>₹{summary?.total_spent || 0}</p>
+        </div>
+      </div>
+
+      {/* Charts */}
+      {loading ? (
+        <div className="d-flex justify-content-center align-items-center" style={{ height: "200px" }}>
+          <Spinner animation="border" variant="primary" />
+        </div>
+      ) : (
+        <div className="charts-grid">
+          <Card className="chart-card">
+            <Card.Body>
+              <Card.Title className="text-center fw-bold">Total Spent per Purchase</Card.Title>
+              <Bar data={barData} options={{ responsive: true, plugins: { legend: { display: false } } }} />
+            </Card.Body>
+          </Card>
+
+          <Card className="chart-card">
+            <Card.Body>
+              <Card.Title className="text-center fw-bold">Quantity Purchased Over Time</Card.Title>
+              <Line data={lineData} options={{ responsive: true }} />
+            </Card.Body>
+          </Card>
+        </div>
+      )}
+
+      {/* Purchases Table */}
+      {loading ? (
+        <p className="loading">Loading...</p>
+      ) : (
+        <table className="report-table">
+          <thead>
+            <tr>
+              <th>Invoice No</th>
+              <th>Product</th>
+              <th>Supplier</th>
+              <th>Category</th>
+              <th>Quantity</th>
+              <th>Unit Price</th>
+              <th>Purchase Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            {purchasesData.length > 0 ? (
+              purchasesData.map((purchase) => (
+                <tr key={purchase.purchase_id}>
+                  <td>{purchase.invoice_no}</td>
+                  <td>{purchase.product_name}</td>
+                  <td>{purchase.supplier_name}</td>
+                  <td>{purchase.category_name}</td>
+                  <td>{purchase.quantity}</td>
+                  <td>₹{purchase.unit_price}</td>
+                  <td>{new Date(purchase.purchase_date).toLocaleDateString()}</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="7" style={{ textAlign: "center" }}>
+                  No purchases found
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      )}
+    </div>
+  );
+};
 
 export default AdminDashboard;

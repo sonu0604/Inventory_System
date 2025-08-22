@@ -45,4 +45,9 @@ const salesReportRoutes = require("./routes/salesReportRoute.js");
 // Reports Menu
 app.use("/api/reports/sales", salesReportRoutes);
 
+const purchaseReportRoutes = require("./routes/purchaseReportRoute.js");
+// Reports Menu
+app.use("/api/reports/purchases", purchaseReportRoutes);
+
+
 module.exports=app;
