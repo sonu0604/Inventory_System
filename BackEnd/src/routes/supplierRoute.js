@@ -8,9 +8,9 @@ router.get("/supplier/view", authenticateToken, isAdmin, supplierController.getA
 router.get("/supplier/:id", authenticateToken, isAdmin, supplierController.getSupplierById);
 router.put("/supplier/update/:id", authenticateToken, isAdmin, supplierController.updateSupplier);
 router.delete("/supplier/delete/:id", authenticateToken, isAdmin, supplierController.deleteSupplier);
-// router.get("/supplier/search", authenticateToken, isAdmin, supplierController.searchSupplierByName);
 router.get("/supplier/search/:name", authenticateToken, isAdmin, supplierController.searchSupplierByName);
-
+router.get("/suppliers", authenticateToken, isAdmin, supplierController.getAllSuppliersNoPagination);
+// router.get("/supplier/search", authenticateToken, isAdmin, supplierController.searchSupplierByName);
 
 module.exports = router;
 

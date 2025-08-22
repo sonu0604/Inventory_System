@@ -8,10 +8,11 @@ const createCustomer = (data, callback) => {
   `;
   const values = [
     data.name,
-    data.contact_info || null,
-    data.address || null,
-    data.created_by || null
+    data.contact_info,
+    data.address,
+    data.created_by,
   ];
+
   db.query(sql, values, callback);
 };
 

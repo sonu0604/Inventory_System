@@ -18,6 +18,7 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use(bodyparser.urlencoded({extended:true}));
 app.use(express.json());
 app.use('/', router);
+app.use("/api", require("./routes/route.js"));
 const categoryRoutes = require("./routes/categoryRoute.js");
 app.use("/api", categoryRoutes);
 
@@ -36,5 +37,12 @@ app.use("/api", purchaseRoutes);
 const salesRoutes = require('./routes/salesRoute.js');
 app.use("/api", salesRoutes);
 
+const overviewRoutes = require("./routes/overviewRoute.js");
+// ✅ Mount the route
+app.use("/api/dashboard", overviewRoutes);
+
+const salesReportRoutes = require("./routes/salesReportRoute.js");
+// Reports Menu
+app.use("/api/reports/sales", salesReportRoutes);
 
 module.exports=app;

@@ -1,26 +1,45 @@
 const customerModel = require('../models/customerModel');
 
 // Create a new customer
-const createCustomer = (req, res) => {
-  const { name, contact_info, address } = req.body;
-  const created_by = req.user?.user_id;
+// Create customer
+const createCustomer = async (req, res) => {
+  try {
+    const { name, contact_info, address } = req.body;
+    const created_by = req.user?.user_id;
 
-  if (!name || !created_by) {
-    return res.status(400).json({ message: 'Name and created_by are required' });
+    // Basic validation
+    if (!name || !created_by) {
+      return res.status(400).json({ message: "Name and created_by are required" });
+    }
+
+    // Prepare data
+    const data = {
+      name: name.trim(),
+      contact_info: contact_info?.trim() || null,
+      address: address?.trim() || null,
+      created_by,
+    };
+
+    // Call model
+    customerModel.createCustomer(data, (err, result) => {
+      if (err) {
+        // Handle duplicate entry
+        if (err.code === "ER_DUP_ENTRY") {
+          return res.status(400).json({ message: "Customer name already exists" });
+        }
+        return res.status(500).json({ message: "Insert failed", error: err });
+      }
+
+      res.status(201).json({
+        message: "Customer created successfully",
+        customer_id: result.insertId,
+      });
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error", error });
   }
-
-  const data = {
-    name: name.trim(),
-    contact_info: contact_info?.trim() || null,
-    address: address?.trim() || null,
-    created_by
-  };
-
-  customerModel.createCustomer(data, (err, result) => {
-    if (err) return res.status(500).json({ message: 'Insert failed', error: err });
-    res.status(201).json({ message: 'Customer created successfully', id: result.insertId });
-  });
 };
+
 
 // Get all customers
 const getAllCustomers = (req, res) => {

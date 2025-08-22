@@ -1,11 +1,11 @@
 // src/pages/HomePage.js
 import React from "react";
-import Navbar from "../Components/Navbar";
-import HeroSection from "../Components/HeroSection";
-import About from "../Components/About";
-import Features from "../Components/Features";
-import Contact from "../Components/Contact";
-import Footer from "../Components/Footer";
+import Navbar from "../components/Navbar";
+import HeroSection from "../components/HeroSection";
+import About from "../components/About";
+import Features from "../components/Features";
+import Contact from "../components/Contact";
+import Footer from "../components/Footer";
 
 function HomePage() {
   return (

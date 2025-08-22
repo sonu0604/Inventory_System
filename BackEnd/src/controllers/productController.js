@@ -1,30 +1,36 @@
 const productModel = require('../models/productModel');
+const db=require("../../db")
 
+// CREATE PRODUCT
 const createProduct = (req, res) => {
-  const { name, category_id, unit_price, quantity_in_stock, created_by, product_image, minQty } = req.body;
+  const { name, category_id, unit_price, quantity_in_stock, minQty } = req.body;
+  const created_by = req.user?.id || 1; // fallback for now
 
-  if (!name || !category_id || !unit_price || !created_by || !minQty) {
-    return res.status(400).json({ message: 'All fields are required (except image and stock)' });
+  if (!name || !category_id || !unit_price || !minQty) {
+    return res.status(400).json({ message: "⚠️ Required fields missing" });
   }
 
-  productModel.findProductByName(name.trim(), (err, result) => {
-    if (err) return res.status(500).json({ message: 'DB Error', error: err });
-    if (result.length > 0) return res.status(409).json({ message: 'Product with same name already exists' });
+  const newProduct = {
+    name: name.trim(),
+    category_id,
+    unit_price,
+    quantity_in_stock: quantity_in_stock || 0,
+    minQty,
+    created_by,
+  };
 
-    const data = {
-      name: name.trim(),
-      category_id,
-      unit_price,
-      quantity_in_stock: quantity_in_stock || 0,
-      created_by,
-      product_image: product_image || null,
-      minQty
-    };
+  if (req.file) {
+    // ✅ only filename (NOT /uploads/filename)
+    newProduct.product_image = req.file.filename;
+  }
 
-    productModel.createProduct(data, (err, result) => {
-      if (err) return res.status(500).json({ message: 'Insert failed', error: err });
-      res.status(201).json({ message: 'Product created successfully' });
-    });
+  const sql = "INSERT INTO products SET ?";
+  db.query(sql, newProduct, (err, result) => {
+    if (err) {
+      console.error("❌ Error creating product:", err);
+      return res.status(500).json({ message: "❌ Failed to create product" });
+    }
+    res.status(201).json({ message: "✅ Product created successfully" });
   });
 };
 
@@ -43,36 +49,42 @@ const getProductById = (req, res) => {
   });
 };
 
+
+// UPDATE PRODUCT
 const updateProduct = (req, res) => {
   const { id } = req.params;
-  const { name, category_id, unit_price, quantity_in_stock, created_by, product_image, minQty } = req.body;
+  const { name, category_id, unit_price, quantity_in_stock, minQty } = req.body;
 
-  if (!name || !category_id || !unit_price || !created_by || !minQty) {
-    return res.status(400).json({ message: 'All fields are required' });
+  if (!name || !category_id || !unit_price || !minQty) {
+    return res.status(400).json({ message: "⚠️ Required fields missing" });
   }
 
-  productModel.findProductByName(name.trim(), (err, result) => {
-    if (err) return res.status(500).json({ message: 'DB Error', error: err });
-    if (result.length > 0 && result[0].product_id != id) {
-      return res.status(409).json({ message: 'Product name already exists' });
+  const updatedData = {
+    name: name.trim(),
+    category_id,
+    unit_price,
+    quantity_in_stock,
+    minQty,
+  };
+
+  if (req.file) {
+    updatedData.product_image = req.file.filename;
+  }
+
+  const sql = "UPDATE products SET ? WHERE product_id = ?";
+  db.query(sql, [updatedData, id], (err, result) => {
+    if (err) {
+      console.error("❌ Error updating product:", err);
+      return res.status(500).json({ message: "❌ Failed to update product" });
     }
-
-    const updatedData = {
-      name: name.trim(),
-      category_id,
-      unit_price,
-      quantity_in_stock: quantity_in_stock || 0,
-      created_by,
-      product_image: product_image || null,
-      minQty
-    };
-
-    productModel.updateProduct(id, updatedData, (err, result) => {
-      if (err) return res.status(500).json({ message: 'Update failed', error: err });
-      res.json({ message: 'Product updated successfully' });
-    });
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "⚠️ Product not found" });
+    }
+    res.json({ message: "✅ Product updated successfully" });
   });
 };
+
+
 
 const deleteProduct = (req, res) => {
   productModel.deleteProduct(req.params.id, (err, result) => {
