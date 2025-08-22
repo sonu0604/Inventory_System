@@ -1369,3 +1369,214 @@ tr:hover {
   color: #ccc;
   font-weight: 500;
 }
+.sales-report-container {
+  background-color: #121212;
+  color: #f5f5f5;
+  min-height: 100vh;
+  padding: 30px;
+}
+
+.sales-report-title {
+  text-align: center;
+  font-weight: bold;
+  font-size: 28px;
+  color: cyan;
+  margin-bottom: 30px;
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 300px;
+}
+
+.sales-report-card {
+  background: #1e1e1e !important;
+  color: #f5f5f5;
+  border-radius: 16px;
+  border: none;
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.1);
+  transition: transform 0.2s ease-in-out;
+}
+
+.sales-report-card:hover {
+  transform: translateY(-5px);
+}
+
+.chart-title {
+  text-align: center;
+  font-weight: bold;
+  color: #ffcc00;
+  margin-bottom: 15px;
+}
+
+.summary-container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 30px;
+  gap: 20px;
+}
+
+.summary-card {
+  flex: 1;
+  padding: 20px;
+  background: #1e1e1e;
+  border-radius: 16px;
+  text-align: center;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+  transition: transform 0.2s ease-in-out;
+}
+
+.summary-card:hover {
+  transform: scale(1.05);
+}
+
+.summary-card h4 {
+  font-size: 18px;
+  color: #bbb;
+  margin-bottom: 10px;
+}
+
+.summary-card p {
+  font-size: 22px;
+  font-weight: bold;
+  color: cyan;
+}
+
+/* PurchasesReport.css */
+
+/* Container */
+.report-container {
+  padding: 30px;
+  background: linear-gradient(135deg, #0d0d0d, #1a1a2e);
+  min-height: 100vh;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: #eaeaea;
+}
+
+/* Title */
+.report-title {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #00d8ff;
+  margin-bottom: 25px;
+}
+
+/* Filters */
+.filters {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin-bottom: 25px;
+}
+
+.date-input {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: none;
+  background-color: #1a1a2e;
+  color: #fff;
+  font-size: 0.95rem;
+  outline: none;
+  transition: 0.3s;
+}
+
+.date-input:focus {
+  box-shadow: 0 0 8px #00d8ff;
+}
+
+.filter-btn {
+  padding: 8px 16px;
+  background: linear-gradient(135deg, #00d8ff, #0077b6);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.filter-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 216, 255, 0.5);
+}
+
+/* Summary Cards */
+.summary-cards {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+
+.summary-cards .card {
+  flex: 1;
+  background: linear-gradient(135deg, #1a1a2e, #111);
+  border-radius: 16px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.6);
+  transition: all 0.3s ease-in-out;
+}
+
+.summary-cards .card:hover {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.7);
+}
+
+.summary-cards .card h4 {
+  margin-bottom: 10px;
+  font-weight: 500;
+  color: #ccc;
+}
+
+.summary-cards .card p {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #00d8ff;
+}
+
+/* Table */
+.report-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #111;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+}
+
+.report-table thead {
+  background: #1a1a2e;
+}
+
+.report-table th, 
+.report-table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  font-size: 0.95rem;
+}
+
+.report-table th {
+  color: #00d8ff;
+  font-weight: 600;
+}
+
+.report-table tr:hover {
+  background: rgba(0, 216, 255, 0.1);
+  transform: scale(1.01);
+  transition: all 0.2s ease-in-out;
+}
+
+/* Loading */
+.loading {
+  text-align: center;
+  font-size: 1.5rem;
+  color: #ccc;
+  margin-top: 40px;
+  font-weight: 500;
+}
+
