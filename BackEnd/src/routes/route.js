@@ -1,14 +1,15 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const controller = require('../controllers/controller');
-const upload = require("../middlewares/upload"); // import multer config
-// POST /api/register
+const controller = require("../controllers/controller");
+const upload = require("../middleware/upload");
+
+// Register user with profile picture
 router.post("/register", upload.single("picture"), controller.register);
 
-// POST /api/login
-router.post('/login', controller.login);
-
+// Login
+router.post("/login", controller.login);
 module.exports = router;
+
 
 
 

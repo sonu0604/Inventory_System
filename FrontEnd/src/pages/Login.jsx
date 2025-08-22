@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Login.css";
 
@@ -7,28 +8,30 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage("");
 
     try {
-      const res = await axios.post("http://localhost:3000/login", { // change port if needed
+      const res = await axios.post("http://localhost:3000/login", {
         email,
-        password
+        password,
       });
 
-      // Save JWT token in localStorage
+      // Save JWT + user in localStorage
       localStorage.setItem("token", res.data.token);
+      localStorage.setItem("user", JSON.stringify(res.data.user));
 
-      // Show different message for admin or staff
+      // Redirect based on role
       if (res.data.user.role === "admin") {
-        setMessage(`Welcome Admin, ${res.data.user.username}!`);
+        navigate("/admin/dashboard");
       } else {
-        setMessage(`Welcome Staff, ${res.data.user.username}!`);
+        setMessage(`Welcome Staff, ${res.data.user.username}! (staff dashboard coming soon)`);
       }
     } catch (err) {
-      console.log(err)
+      console.error(err);
       setMessage(err.response?.data?.message || "Login failed");
     }
   };

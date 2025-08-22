@@ -7,17 +7,26 @@ function Register() {
     username: "",
     email: "",
     password: "",
-    role: "staff", // default role
+    role: "staff",
     contact: "",
     name: "",
-    picture: ""
   });
-
+  const [picture, setPicture] = useState(null);
+  const [preview, setPreview] = useState(null);
   const [message, setMessage] = useState("");
 
-  // Handle input changes
+  // Handle text input
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  // Handle image selection
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setPicture(file);
+    if (file) {
+      setPreview(URL.createObjectURL(file));
+    }
   };
 
   // Submit form
@@ -25,8 +34,18 @@ function Register() {
     e.preventDefault();
     setMessage("");
 
+    const data = new FormData();
+    for (let key in formData) {
+      data.append(key, formData[key]);
+    }
+    if (picture) {
+      data.append("picture", picture);
+    }
+
     try {
-      const res = await axios.post("http://localhost:3000/register", formData);
+      const res = await axios.post("http://localhost:3000/register", data, {
+        headers: { "Content-Type": "multipart/form-data" }
+      });
       setMessage(res.data.message);
       setFormData({
         username: "",
@@ -35,8 +54,9 @@ function Register() {
         role: "staff",
         contact: "",
         name: "",
-        picture: ""
       });
+      setPicture(null);
+      setPreview(null);
     } catch (err) {
       setMessage(err.response?.data?.message || "Registration failed");
     }
@@ -53,118 +73,50 @@ function Register() {
               <form onSubmit={handleSubmit}>
                 
                 {/* Username */}
-                <div className="mb-3">
-                  <label className="form-label">Username</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    name="username"
-                    value={formData.username}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
+                <input type="text" className="form-control mb-3" placeholder="Username"
+                  name="username" value={formData.username} onChange={handleChange} required />
 
                 {/* Full Name */}
-                <div className="mb-3">
-                  <label className="form-label">Full Name</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
+                <input type="text" className="form-control mb-3" placeholder="Full Name"
+                  name="name" value={formData.name} onChange={handleChange} required />
 
                 {/* Email */}
-                <div className="mb-3">
-                  <label className="form-label">Email</label>
-                  <input
-                    type="email"
-                    className="form-control"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
+                <input type="email" className="form-control mb-3" placeholder="Email"
+                  name="email" value={formData.email} onChange={handleChange} required />
 
                 {/* Password */}
-                <div className="mb-3">
-                  <label className="form-label">Password</label>
-                  <input
-                    type="password"
-                    className="form-control"
-                    name="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    required
-                  />
-                  <small className="text-muted">
-                    Must be at least 6 characters, include a digit & special character.
-                  </small>
-                </div>
+                <input type="password" className="form-control mb-3" placeholder="Password"
+                  name="password" value={formData.password} onChange={handleChange} required />
 
                 {/* Contact */}
-                <div className="mb-3">
-                  <label className="form-label">Contact</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    name="contact"
-                    value={formData.contact}
-                    onChange={handleChange}
-                  />
-                </div>
+                <input type="text" className="form-control mb-3" placeholder="Contact"
+                  name="contact" value={formData.contact} onChange={handleChange} />
 
                 {/* Role */}
-                <div className="mb-3">
-                  <label className="form-label">Role</label>
-                  <select
-                    className="form-select"
-                    name="role"
-                    value={formData.role}
-                    onChange={handleChange}
-                  >
-                    <option value="staff">Staff</option>
-                    <option value="admin">Admin</option>
-                  </select>
-                </div>
+                <select className="form-select mb-3" name="role"
+                  value={formData.role} onChange={handleChange}>
+                  <option value="staff">Staff</option>
+                  <option value="admin">Admin</option>
+                </select>
 
-                {/* Profile Picture URL */}
-                <div className="mb-3">
-                  <label className="form-label">Profile Picture URL</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    name="picture"
-                    value={formData.picture}
-                    onChange={handleChange}
-                  />
-                </div>
+                {/* Picture */}
+                <input type="file" className="form-control mb-3"
+                  accept="image/*" onChange={handleFileChange} />
+
+                {/* Preview */}
+                {preview && (
+                  <div className="text-center mb-3">
+                    <img src={preview} alt="preview" className="img-fluid rounded" style={{maxHeight:"150px"}} />
+                  </div>
+                )}
 
                 {/* Submit */}
-                <button
-                  type="submit"
-                  className="btn btn-warning w-100 fw-semibold"
-                >
+                <button type="submit" className="btn btn-warning w-100 fw-semibold">
                   Register
                 </button>
               </form>
 
-              {/* Show message */}
-              {message && (
-                <div className="alert alert-info mt-3 text-center">{message}</div>
-              )}
-
-              <p className="mt-3 text-center">
-                Already have an account?{" "}
-                <a href="/login" className="text-warning fw-bold">
-                  Login
-                </a>
-              </p>
+              {message && <div className="alert alert-info mt-3 text-center">{message}</div>}
             </div>
           </div>
         </div>
