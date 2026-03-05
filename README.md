@@ -1,9 +1,3 @@
-To make your GitHub repository look professional and "copy-paste ready," I have formatted this using standard Markdown.
-
-**Pro-Tip:** Once you paste this into your `README.md` file, make sure to replace the bracketed placeholders like `[yourusername]` with your actual GitHub handle.
-
----
-
 # 📦 InventoryMS: Full-Stack Stock Management System
 
 InventoryMS is a robust, full-stack web application designed to streamline inventory tracking, sales management, and business analytics. It features a secure administrative dashboard with real-time data visualization and role-based access control.
@@ -100,15 +94,3 @@ npm start
 cd client
 npm install
 npm run dev
-
-```
-
----
-
-## 🤝 Contact
-
-Developed by **[Your Name]** – Feel free to reach out for collaborations!
-
----
-
-**Next Step:** I can provide the SQL code for the **`database_schema.sql`** file if you haven't written it yet! Would you like that?
